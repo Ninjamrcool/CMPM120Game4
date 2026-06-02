@@ -25,7 +25,7 @@
 // game config
 let config = {
     parent: 'phaser-game',
-    type: Phaser.CANVAS,
+    type: Phaser.WEBGL,
     render: {
         pixelArt: true  // prevent pixel art from getting blurred when scaled
     },
@@ -47,6 +47,5 @@ let config = {
 
 var cursors;
 const SCALE = 2.0;
-var my = {sprite: {}, text: {}, vfx: {}};
 
 const game = new Phaser.Game(config);

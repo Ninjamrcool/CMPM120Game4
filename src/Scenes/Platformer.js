@@ -26,16 +26,25 @@ class Platformer extends Phaser.Scene {
         this.BUTTON_RADIUS = 35;
         this.BUTTON_PRESS_SECONDS = 1.0;
 
-        // MISC ---------------------
-        this.PARTICLE_VELOCITY = 30;
-        this.PARTICLE_FREQUENCY = 0.1;
+        // Camera ---------------------
         this.CAMERA_SCALE = 2.5;
         this.CAMERA_LERP_SPEED = 0.06;
         this.CAMERA_BOUND_X = 1700;
         this.CAMERA_BOUND_Y = 650;
+    
+        //Misc. ---------------------
+        this.PARTICLE_VELOCITY = 30;
+        this.PARTICLE_FREQUENCY = 0.1;
+        this.AMBIENT_COLOR = 0x505050;
+
     }
 
     create() {
+        this.lights.enable();
+    
+        this.lights.setAmbientColor(this.AMBIENT_COLOR);
+
+
         this.time.timeScale = 0.5;
 
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
@@ -53,6 +62,10 @@ class Platformer extends Phaser.Scene {
         this.groundLayer = this.map.createLayer("Ground", [this.factoryTileset, this.rockTileset], 0, 0);
         this.decorLayer = this.map.createLayer("Decor", [this.factoryTileset, this.rockTileset], 0, 0);
 
+        this.groundLayer.setPipeline('Light2D') 
+        this.decorLayer.setPipeline('Light2D') 
+        this.killLayer.setPipeline('Light2D') 
+        
         // Make it collidable
         this.groundLayer.setCollisionByProperty({
             collides: true
@@ -68,9 +81,10 @@ class Platformer extends Phaser.Scene {
             key: "wrench",
         });
 
-        //this is so dumb
+        //this y bug is so dumb
         for (let collectible of this.collectibles) {
             collectible.y += 576;
+            collectible.setPipeline('Light2D') 
         }
 
         this.crates = this.map.createFromObjects("Crates", {
@@ -82,6 +96,7 @@ class Platformer extends Phaser.Scene {
             crate.y += 576;
             crate.originalX = crate.x;
             crate.originalY = crate.y;
+            crate.setPipeline('Light2D') 
         }
 
         this.buttons = this.map.createFromObjects("Buttons", {
@@ -89,10 +104,11 @@ class Platformer extends Phaser.Scene {
             key: "button_idle",
         });
 
-        //this is so dumb
         for (let button of this.buttons) {
             button.y += 576;
             button.pressedTimer = 0.0
+            button.setPipeline('Light2D')
+            button.light = this.lights.addLight(button.x, button.y, 75, 0x703030, 1);
         }
 
 
@@ -114,12 +130,15 @@ class Platformer extends Phaser.Scene {
         this.crateGroup = this.add.group(this.crates);
 
         // set up player avatar
-        my.sprite.player = this.physics.add.sprite(this.SPAWN_X, this.SPAWN_Y, "platformer_characters", "tile_0000.png");
-        my.sprite.player.setCollideWorldBounds(false);
-        my.sprite.player.scale = this.PLAYER_SCALE;
-        my.sprite.player.body.setSize(15, 13, true); 
-        my.sprite.player.body.setOffset(4.5, 10);
+        this.player = this.physics.add.sprite(this.SPAWN_X, this.SPAWN_Y, "platformer_characters", "tile_0000.png");
+        this.player.setCollideWorldBounds(false);
+        this.player.scale = this.PLAYER_SCALE;
+        this.player.body.setSize(15, 13, true); 
+        this.player.body.setOffset(4.5, 10);
 
+        this.player.setPipeline('Light2D') 
+
+        this.playerLight = this.lights.addLight(200, 300, 100, 0x303050, 1);
 
 
         //random hitbox that is needed to make crates work because jumping on top of two crates is buggy and they phase through each other
@@ -129,21 +148,21 @@ class Platformer extends Phaser.Scene {
         this.invisibleHitbox.body.setImmovable(true);
 
         // Enable collision handling
-        this.physics.add.collider(my.sprite.player, this.groundLayer);
+        this.physics.add.collider(this.player, this.groundLayer);
         this.physics.add.collider(this.crateGroup, this.groundLayer);
-        this.physics.add.collider(my.sprite.player, this.crateGroup);
+        this.physics.add.collider(this.player, this.crateGroup);
         this.physics.add.collider(this.crateGroup, this.crateGroup);
         this.physics.add.collider(this.invisibleHitbox, this.crateGroup);
         this.physics.add.collider(this.invisibleHitbox, this.groundLayer);
 
-        this.killCollider = this.physics.add.collider(my.sprite.player, this.killLayer, (obj1, obj2) => {
+        this.killCollider = this.physics.add.collider(this.player, this.killLayer, (obj1, obj2) => {
             this.killCollider.active = false;
             this.playerFrozen = true;
-            my.sprite.player.anims.play('dead', true);
+            this.player.anims.play('dead', true);
             this.splashSound.play();
 
-            this.deathVFX.x = my.sprite.player.x;
-            this.deathVFX.y = my.sprite.player.y + my.sprite.player.displayHeight;
+            this.deathVFX.x = this.player.x;
+            this.deathVFX.y = this.player.y + this.player.displayHeight;
             this.deathVFX.explode()
 
             this.time.delayedCall(this.RESPAWN_TIME * 1000, () => {this.respawn_player();}, [], this);
@@ -162,7 +181,7 @@ class Platformer extends Phaser.Scene {
         this.collectiblesVFX.stop();
 
         // Handle collision detection with collectibles
-        this.physics.add.overlap(my.sprite.player, this.collectibleGroup, (obj1, obj2) => {
+        this.physics.add.overlap(this.player, this.collectibleGroup, (obj1, obj2) => {
             this.collectiblesVFX.x = obj2.x;
             this.collectiblesVFX.y = obj2.y;
             this.collectiblesVFX.explode()
@@ -188,7 +207,7 @@ class Platformer extends Phaser.Scene {
         }, this);
         this.physics.world.drawDebug = false;
 
-        my.vfx.walking = this.add.particles(0, 0, "white_pixel_particle", {
+        this.walkingVFX = this.add.particles(0, 0, "white_pixel_particle", {
             random: true,
             scale: {start: 0.03, end: 0.1},
             lifespan: 350,
@@ -196,7 +215,7 @@ class Platformer extends Phaser.Scene {
             alpha: {start: 1, end: 0.1}, 
         });
 
-        my.vfx.walking.stop();
+        this.walkingVFX.stop();
 
         this.jumpVFX = this.add.particles(50, 50, "gray_pixel_particle");
         this.jumpVFX.setConfig({
@@ -240,7 +259,7 @@ class Platformer extends Phaser.Scene {
         this.deathVFX.stop();
         
         this.cameras.main.setBounds(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y);
-        this.cameras.main.startFollow(my.sprite.player, true, this.CAMERA_LERP_SPEED, this.CAMERA_LERP_SPEED);
+        this.cameras.main.startFollow(this.player, true, this.CAMERA_LERP_SPEED, this.CAMERA_LERP_SPEED);
         this.cameras.main.setDeadzone(50, 50);
         this.cameras.main.setZoom(this.CAMERA_SCALE);
         
@@ -303,46 +322,46 @@ class Platformer extends Phaser.Scene {
         this.coyoteTimer += delta / 1000;
 
         if(cursors.left.isDown || this.aKey.isDown && !this.playerFrozen) {
-            my.sprite.player.setAccelerationX(-this.ACCELERATION);
-            my.sprite.player.resetFlip();
-            my.sprite.player.anims.play('walk', true);
+            this.player.setAccelerationX(-this.ACCELERATION);
+            this.player.resetFlip();
+            this.player.anims.play('walk', true);
 
-            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-15, my.sprite.player.displayHeight/2, false);
-            my.vfx.walking.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
+            this.walkingVFX.startFollow(this.player, this.player.displayWidth/2-15, this.player.displayHeight/2, false);
+            this.walkingVFX.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
 
             // Only play smoke effect if touching the ground
 
-            if (my.sprite.player.body.blocked.down && Math.abs(my.sprite.player.body.velocity.x) > 0.1 && Math.random() < this.PARTICLE_FREQUENCY) {
-                my.vfx.walking.explode();
+            if (this.player.body.blocked.down && Math.abs(this.player.body.velocity.x) > 0.1 && Math.random() < this.PARTICLE_FREQUENCY) {
+                this.walkingVFX.explode();
             }
 
         } else if(cursors.right.isDown || this.dKey.isDown && !this.playerFrozen) {
-            my.sprite.player.setAccelerationX(this.ACCELERATION);
-            my.sprite.player.setFlip(true, false);
-            my.sprite.player.anims.play('walk', true);
+            this.player.setAccelerationX(this.ACCELERATION);
+            this.player.setFlip(true, false);
+            this.player.anims.play('walk', true);
             
-            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-15, my.sprite.player.displayHeight/2, false);
+            this.walkingVFX.startFollow(this.player, this.player.displayWidth/2-15, this.player.displayHeight/2, false);
 
-            my.vfx.walking.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
+            this.walkingVFX.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
 
             // Only play smoke effect if touching the ground
 
-            if (my.sprite.player.body.blocked.down && Math.abs(my.sprite.player.body.velocity.x) > 0.1 && Math.random() < this.PARTICLE_FREQUENCY) {
-                my.vfx.walking.explode();
+            if (this.player.body.blocked.down && Math.abs(this.player.body.velocity.x) > 0.1 && Math.random() < this.PARTICLE_FREQUENCY) {
+                this.walkingVFX.explode();
             }
 
         } else {
             // Set acceleration to 0 and have DRAG take over
-            my.sprite.player.setAccelerationX(0);
-            my.sprite.player.setDragX(this.DRAG);
+            this.player.setAccelerationX(0);
+            this.player.setDragX(this.DRAG);
             if (!this.playerFrozen){
-                my.sprite.player.anims.play('idle');
+                this.player.anims.play('idle');
             }
 
-            my.vfx.walking.stop();
+            this.walkingVFX.stop();
         }
 
-        if ((cursors.left.isDown || this.aKey.isDown || cursors.right.isDown || this.dKey.isDown || Math.abs(my.sprite.player.body.velocity.x) > 30) && my.sprite.player.body.blocked.down) {
+        if ((cursors.left.isDown || this.aKey.isDown || cursors.right.isDown || this.dKey.isDown || Math.abs(this.player.body.velocity.x) > 30) && this.player.body.blocked.down) {
             if (!this.footstep1Sound.isPlaying) {
                 this.start_footstep_sounds();
             }
@@ -360,23 +379,23 @@ class Platformer extends Phaser.Scene {
         }
 
         // Clamp x velocity
-        my.sprite.player.setVelocityX(Math.max(Math.min(my.sprite.player.body.velocity.x, this.MAX_SPEED), -this.MAX_SPEED));
+        this.player.setVelocityX(Math.max(Math.min(this.player.body.velocity.x, this.MAX_SPEED), -this.MAX_SPEED));
 
         // player jump
         // note that we need body.blocked rather than body.touching b/c the former applies to tilemap tiles and the latter to the "ground"
-        if(!my.sprite.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
-            my.sprite.player.anims.play('jump');
+        if(!this.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
+            this.player.anims.play('jump');
         }
-        if(!this.playerFrozen && (my.sprite.player.body.blocked.down || this.coyoteTimer < this.COYOTE_TIME) && (Phaser.Input.Keyboard.JustDown(cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey))) {
-            my.sprite.player.body.setVelocityY(this.JUMP_VELOCITY);
+        if(!this.playerFrozen && (this.player.body.blocked.down || this.coyoteTimer < this.COYOTE_TIME) && (Phaser.Input.Keyboard.JustDown(cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey))) {
+            this.player.body.setVelocityY(this.JUMP_VELOCITY);
 
             this.jumpSound.play();
 
-            this.jumpVFX.x = my.sprite.player.x;
-            this.jumpVFX.y = my.sprite.player.y + 10;
+            this.jumpVFX.x = this.player.x;
+            this.jumpVFX.y = this.player.y + 10;
             this.jumpVFX.explode()
         }
-        if (my.sprite.player.body.blocked.down){
+        if (this.player.body.blocked.down){
             this.coyoteTimer = 0;
             this.lastBlockedTime = time;
         }
@@ -400,7 +419,7 @@ class Platformer extends Phaser.Scene {
                 continue;
             }
 
-            if (Math.sqrt((button.x - my.sprite.player.x) ** 2 + (button.y - my.sprite.player.y) ** 2) < this.BUTTON_RADIUS) {
+            if (Math.sqrt((button.x - this.player.x) ** 2 + (button.y - this.player.y) ** 2) < this.BUTTON_RADIUS) {
                 button.setTexture("button_near");
 
                 if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
@@ -418,10 +437,13 @@ class Platformer extends Phaser.Scene {
             }
         }
 
+        this.playerLight.x = this.player.x;
+        this.playerLight.y = this.player.y;
+
         this.check_win_state();
 
-        //console.log(my.sprite.player.x);
-        //console.log(my.sprite.player.y);
+        //console.log(this.player.x);
+        //console.log(this.player.y);
     }
 
     start_footstep_sounds(){
@@ -448,17 +470,17 @@ class Platformer extends Phaser.Scene {
 
         let maxIndex = -1;
         for (let i = 0; i < this.buttons.length; i++) {
-            if (this.buttons[i].y > 300 && this.buttons[i] && this.buttons[i].x < my.sprite.player.x && (maxIndex === -1 || this.buttons[i].x > this.buttons[maxIndex].x)) {
+            if (this.buttons[i].y > 300 && this.buttons[i] && this.buttons[i].x < this.player.x && (maxIndex === -1 || this.buttons[i].x > this.buttons[maxIndex].x)) {
                 maxIndex = i;
             }
         }
 
-        my.sprite.player.x = this.buttons[maxIndex].x;
-        my.sprite.player.y = this.buttons[maxIndex].y;
+        this.player.x = this.buttons[maxIndex].x;
+        this.player.y = this.buttons[maxIndex].y;
     }
 
     check_win_state() {
-        if (my.sprite.player.x < this.CAMERA_BOUND_X + 50 || this.hasWon){
+        if (this.player.x < this.CAMERA_BOUND_X + 50 || this.hasWon){
             return;
         }
 
