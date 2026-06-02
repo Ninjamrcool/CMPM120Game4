@@ -1,0 +1,54 @@
+{
+    "activeFile": "factory.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3
+        },
+        "factory.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 638.6666666666666,
+                "y": -98.66666666666663
+            }
+        },
+        "factory.tmx#factory_tileset": {
+            "scaleInDock": 2
+        },
+        "factory.tmx#rock_tileset": {
+            "scaleInDock": 1
+        },
+        "rock_tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/curtf/OneDrive/Desktop/CMPM120/CMPM120Game3/FactoryFlight/assets",
+    "last.imagePath": "C:/Users/curtf/OneDrive/Desktop/CMPM120/CMPM120Game3/FactoryFlight/assets/sprites/tilemap",
+    "map.fixedSize": false,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 18,
+    "map.tileWidth": 18,
+    "openFiles": [
+        "factory.tmx"
+    ],
+    "project": "factory_flight.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "factory.tmx",
+        "rock_tileset.tsx"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.lastUsedExportFilter": "All Files (*)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 18,
+        "width": 18
+    }
+}
