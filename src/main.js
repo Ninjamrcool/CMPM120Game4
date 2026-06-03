@@ -27,7 +27,8 @@ let config = {
     parent: 'phaser-game',
     type: Phaser.WEBGL,
     render: {
-        pixelArt: true  // prevent pixel art from getting blurred when scaled
+        pixelArt: true,  // prevent pixel art from getting blurred when scaled
+        maxLights: 20
     },
     physics: {
         default: 'arcade',

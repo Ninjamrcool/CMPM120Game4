@@ -83,6 +83,8 @@ class Platformer extends Phaser.Scene {
             }
         });
 
+        this.spawnAcidLights();
+
         // Must be at the end of create()
         this.initializeAnimatedTiles();
     }
@@ -366,6 +368,24 @@ class Platformer extends Phaser.Scene {
 
         this.winSound = this.sound.add("win", {
             volume: 0.25
+        });
+    }
+
+    spawnAcidLights() {
+        this.killLayer.forEachTile(tile => {
+            if(tile && tile.index > 0){
+                if ((tile.x + tile.y) % 6 === 1){
+                    this.lights.addLight(tile.pixelX, tile.pixelY, 100, 0x308030, 1);
+                }
+            }
+        });
+
+        this.decorLayer.forEachTile(tile => {
+            if(tile && tile.index === 31){ //acid waterfall center tile
+                if ((tile.x + tile.y) % 4 === 1){
+                    this.lights.addLight(tile.pixelX, tile.pixelY, 100, 0x308030, 1);
+                }
+            }
         });
     }
 
