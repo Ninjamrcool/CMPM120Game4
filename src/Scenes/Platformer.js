@@ -83,9 +83,8 @@ class Platformer extends Phaser.Scene {
             }
         });
 
-        // Always at the end of create
-        //console.log(this.animatedTiles)
-        //this.animatedTiles.init(this.map);
+        // Must be at the end of create()
+        this.initializeAnimatedTiles();
     }
 
     setupTilemap() {
@@ -100,7 +99,7 @@ class Platformer extends Phaser.Scene {
         this.rockTileset = this.map.addTilesetImage("rock_tileset", "rock_tiles_packed");
 
         // Create layers
-        this.killLayer = this.map.createLayer("Kill", [this.factoryTileset, this.rockTileset], 288, 288);
+        this.killLayer = this.map.createLayer("Kill", [this.factoryTileset, this.rockTileset], 0, 0);
         this.groundLayer = this.map.createLayer("Ground", [this.factoryTileset, this.rockTileset], 0, 0);
         this.decorLayer = this.map.createLayer("Decor", [this.factoryTileset, this.rockTileset], 0, 0);
 
@@ -368,6 +367,24 @@ class Platformer extends Phaser.Scene {
         this.winSound = this.sound.add("win", {
             volume: 0.25
         });
+    }
+
+    initializeAnimatedTiles() {
+        // Code from aaron that fixes animated tiles plugin
+        this.map.layers.forEach(layerData => {
+            layerData.data.forEach(row => {
+                row.forEach((tile, i) => {
+                    if(tile === null){
+                        row[i] = new Phaser.Tilemaps.Tile(layerData, 1, 0, 0, this.map.tileWidth, this.map.tileHeight, this.map.tileWidth, this.map.tileHeight);
+                    }
+                });
+            });
+        });
+
+        // Initialize the animated tiles plugin
+        // This line needs to come *after* any line which creates a tilemap layer.
+        // Putting this at the end of create() is a safe place
+        this.animatedTiles.init(this.map);
     }
 
     // Update --------------------------------------------------------

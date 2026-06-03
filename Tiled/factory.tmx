@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="8" nextobjectid="17">
  <editorsettings>
-  <export target="FactoryFlight/assets/factory.tmj" format="json"/>
+  <export target="../assets/factory.tmj" format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="factory_tileset" tilewidth="18" tileheight="18" tilecount="112" columns="16">
-  <image source="FactoryFlight/assets/sprites/tilemap/factory_tiles_packed.png" width="288" height="126"/>
+  <image source="../assets/sprites/tilemap/factory_tiles_packed.png" width="288" height="126"/>
   <tile id="0">
    <properties>
     <property name="collides" type="bool" value="true"/>
@@ -44,11 +44,19 @@
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
+   <animation>
+    <frame tileid="13" duration="200"/>
+    <frame tileid="29" duration="200"/>
+   </animation>
   </tile>
   <tile id="14">
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
+   <animation>
+    <frame tileid="14" duration="100"/>
+    <frame tileid="15" duration="100"/>
+   </animation>
   </tile>
   <tile id="15">
    <properties>
@@ -104,6 +112,10 @@
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
+   <animation>
+    <frame tileid="30" duration="100"/>
+    <frame tileid="31" duration="100"/>
+   </animation>
   </tile>
   <tile id="31">
    <properties>
@@ -154,6 +166,10 @@
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
+   <animation>
+    <frame tileid="46" duration="100"/>
+    <frame tileid="47" duration="100"/>
+   </animation>
   </tile>
   <tile id="47">
    <properties>
@@ -269,6 +285,10 @@
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
+   <animation>
+    <frame tileid="94" duration="200"/>
+    <frame tileid="95" duration="200"/>
+   </animation>
   </tile>
   <tile id="95">
    <properties>
@@ -312,7 +332,7 @@
   </tile>
  </tileset>
  <tileset firstgid="113" name="rock_tileset" tilewidth="18" tileheight="18" tilecount="81" columns="9">
-  <image source="FactoryFlight/assets/sprites/tilemap/rock_tiles_packed.png" width="162" height="162"/>
+  <image source="../assets/sprites/tilemap/rock_tiles_packed.png" width="162" height="162"/>
   <tile id="0">
    <properties>
     <property name="collides" type="bool" value="true"/>
@@ -799,7 +819,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,30,95,30,30,30,30,30,30,30,30,0,0
+0,0,0,0,14,14,14,14,14,14,14,14,14,14,0,0
 </chunk>
    <chunk x="32" y="-16" width="16" height="16">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -816,7 +836,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,
+0,0,0,0,0,0,0,0,0,0,0,0,0,14,14,14,
 0,0,0,0,0,0,0,0,0,0,0,0,0,46,46,46
 </chunk>
    <chunk x="48" y="-16" width="16" height="16">
@@ -834,7 +854,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-30,30,30,30,30,30,30,30,95,30,0,0,0,0,0,0,
+14,14,14,14,15,14,14,14,95,14,0,0,0,0,0,0,
 46,46,46,46,46,46,46,46,46,46,0,0,0,0,0,0
 </chunk>
    <chunk x="64" y="-16" width="16" height="16">
@@ -842,7 +862,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,14,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -860,8 +880,26 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-30,30,30,30,30,30,30,30,30,30,30,0,0,0,0,0,
+14,14,14,14,14,15,14,14,14,14,14,0,0,0,0,0,
 46,46,46,46,46,46,46,46,46,46,46,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</chunk>
+   <chunk x="0" y="0" width="16" height="16">
+14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -1399,8 +1437,8 @@
 0,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,31,0,0,0,77,109,0,0,0,0,0,0,
-0,0,0,0,31,0,0,0,79,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,47,0,0,0,79,0,0,0,0,0,0,0,
+0,0,0,0,14,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </chunk>
    <chunk x="64" y="-16" width="16" height="16">
@@ -1426,7 +1464,7 @@
 0,0,0,0,0,31,0,0,0,0,76,0,0,0,0,0,
 0,0,43,0,0,31,0,0,0,0,92,0,0,0,0,0,
 0,0,59,0,0,47,0,0,0,0,93,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,14,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
