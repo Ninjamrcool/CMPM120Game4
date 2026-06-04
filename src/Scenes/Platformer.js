@@ -74,15 +74,6 @@ class Platformer extends Phaser.Scene {
 
         this.background = this.add.tileSprite(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y, "background").setOrigin(0, 0).setScrollFactor(0.5).depth = -2;
 
-        this.input.on('pointerdown', (pointer) => {
-            if (this.hasWon){
-                this.footstep1Sound.stop();
-                this.footstep2Sound.stop();
-                this.footstep3Sound.stop();
-                this.scene.restart();
-            }
-        });
-
         this.spawnAcidLights();
 
         // Must be at the end of create()
@@ -320,6 +311,9 @@ class Platformer extends Phaser.Scene {
         this.sKey = this.input.keyboard.addKey('S');
         this.dKey = this.input.keyboard.addKey('D');
 
+        this.escKey = this.input.keyboard.addKey('ESC');
+
+
         // debug key listener (assigned to D key)
         this.input.keyboard.on('keydown-Q', () => {
             this.physics.world.drawDebug = this.physics.world.drawDebug ? false : true
@@ -433,6 +427,12 @@ class Platformer extends Phaser.Scene {
 
         //console.log(this.player.x);
         //console.log(this.player.y);
+
+        if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
+            this.stopFootstepSounds();
+            this.scene.launch("pauseScreenScene");
+            this.scene.pause();
+        }
     }
 
     handlePlayerInput() {
@@ -508,6 +508,12 @@ class Platformer extends Phaser.Scene {
         this.footstep3Sound.setLoop(true);
     }
 
+    stopFootstepSounds(){
+        this.footstep1Sound.stop();
+        this.footstep2Sound.stop();
+        this.footstep3Sound.stop();
+    }
+
     handlePlayerJump(time) {
         // note that we need body.blocked rather than body.touching b/c the former applies to tilemap tiles and the latter to the "ground"
         if(!this.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
@@ -578,46 +584,24 @@ class Platformer extends Phaser.Scene {
     }
 
     checkWinState() {
-        if (this.player.x < this.CAMERA_BOUND_X + 50 || this.hasWon){
+        if (this.player.x < this.CAMERA_BOUND_X + 50){
+            return;
+        }
+
+        if (this.hasWon){
+            if (!this.scene.isActive("winScreenScene")){
+                this.stopFootstepSounds();
+                this.scene.restart();
+            }
             return;
         }
 
         this.hasWon = true;
         this.winSound.play();
 
-        let x = 1420;
-        let y = 219;
-
-        
-        this.youWin = this.add.bitmapText(x, y - 30, "rocketSquare", "You Win!");
-        this.youWin.setDepth(4);
-        this.youWin.setOrigin(0.5);
-        this.youWin.setScale(1.5);
-
-        let collectiblesLeft = this.collectibleGroup.getChildren().length;
-        this.collectedText = this.add.bitmapText(x, y, "rocketSquare", "Collected " + (3 - collectiblesLeft) + "/3  ");
-        this.collectedText.setDepth(4);
-        this.collectedText.setOrigin(0.5);
-        this.collectedText.setScale(1.0);
-
-        this.collectedWrench = this.add.sprite(x + 165, y + 2, "wrench");
-        this.collectedWrench.setDepth(4);
-        this.collectedWrench.setOrigin(0.5);
-        this.collectedWrench.setScale(1.5);
-
-        this.youWinRestart = this.add.bitmapText(x, y + 30, "rocketSquare", "- click to restart -");
-        this.youWinRestart.setDepth(4);
-        this.youWinRestart.setOrigin(0.5);
-        this.youWinRestart.setScale(1.0);
-
-        this.blackSquare = this.add.sprite(x, y, "black_square");
-        this.blackSquare.setDepth(3);
-        this.blackSquare.setScale(50);
-        this.blackSquare.alpha = 0.5;
-
-        this.footstep1Sound.stop();
-        this.footstep2Sound.stop();
-        this.footstep3Sound.stop();
+        this.stopFootstepSounds();
+        this.scene.launch("winScreenScene");
+        this.scene.pause();
 
         return;
     }
