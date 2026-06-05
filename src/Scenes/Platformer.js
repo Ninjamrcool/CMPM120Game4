@@ -87,8 +87,6 @@ class Platformer extends Phaser.Scene {
 
         this.setupPlayer();
 
-        this.setupNPCS();
-
         this.createVFX();
 
         this.setupHardCollisions();
@@ -106,6 +104,9 @@ class Platformer extends Phaser.Scene {
         this.setupCamera();
 
         this.setupSounds();
+
+        //Must be after setupSounds() so that NPCs can use the sounds when talking
+        this.setupNPCS();
 
         this.background = this.add.tileSprite(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y, "background").setOrigin(0, 0).setScrollFactor(0.5).depth = -2;
 
@@ -224,6 +225,7 @@ class Platformer extends Phaser.Scene {
                 ],
                 light: this.lights.addLight(300, 500, 100, 0x308030, 1),
                 blowUpSprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png").setScale(3).setVisible(false).setDepth(4),
+                talkRate: 1,
             },
             {
                 name: "npc2",
@@ -234,6 +236,7 @@ class Platformer extends Phaser.Scene {
                 ],
                 light: this.lights.addLight(600, 450, 100, 0x308030, 1),
                 blowUpSprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png").setScale(3).setVisible(false).setDepth(4),
+                talkRate: 0.5,
             }
         ];
     }
@@ -379,6 +382,7 @@ class Platformer extends Phaser.Scene {
         this.dKey = this.input.keyboard.addKey('D');
 
         this.escKey = this.input.keyboard.addKey('ESC');
+        this.spaceBar = this.input.keyboard.addKey('SPACE');
 
 
         // debug key listener (assigned to D key)
@@ -424,11 +428,21 @@ class Platformer extends Phaser.Scene {
         });
 
         this.jumpSound = this.sound.add("jump", {
-            volume: 0.25
+            volume: 0.15
         });
 
         this.winSound = this.sound.add("win", {
             volume: 0.25
+        });
+
+        this.talkingSound = this.sound.add("talking2", {
+            volume: 0.25
+        });
+
+        //create bg music
+        this.factoryMusic = this.sound.add("factory_music", {
+            volume: 0.1,
+            loop: true
         });
     }
 
@@ -496,18 +510,19 @@ class Platformer extends Phaser.Scene {
 
         //console.log(this.player.x);
         //console.log(this.player.y);
+        if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
+            this.factoryMusic.play();
+        }
 
         if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
             this.stopFootstepSounds();
+            this.sound.setVolume(0.4);
             this.scene.launch("pauseScreenScene");
             this.scene.pause();
         }
     }
 
     handlePlayerInput() {
-        if (this.IN_DIALOGUE) {
-            return 0;
-        }
         let inputDirection = 0;
         if (!this.playerFrozen){
             if(cursors.left.isDown || this.aKey.isDown) {
@@ -551,9 +566,6 @@ class Platformer extends Phaser.Scene {
     }
 
     checkFootstepSounds(inputDirection, delta) {
-        if (this.IN_DIALOGUE) {
-            return;
-        }
         if ((inputDirection !== 0 || Math.abs(this.player.body.velocity.x) > 30) && this.player.body.blocked.down) {
             if (!this.footstep1Sound.isPlaying) {
                 this.startFootstepSounds();
@@ -566,9 +578,6 @@ class Platformer extends Phaser.Scene {
             this.footstep1Sound.setLoop(false);
             this.footstep2Sound.setLoop(false);
             this.footstep3Sound.setLoop(false);
-            this.footstep1Sound.setVolume(this.footstep1Sound.volume - 5 * (delta / 1000));
-            this.footstep2Sound.setVolume(this.footstep2Sound.volume - 5 * (delta / 1000));
-            this.footstep3Sound.setVolume(this.footstep3Sound.volume - 5 * (delta / 1000));
         }
     }
 
@@ -590,9 +599,6 @@ class Platformer extends Phaser.Scene {
     }
 
     handlePlayerJump(time) {
-        if (this.IN_DIALOGUE) {
-            return;
-        }
         // note that we need body.blocked rather than body.touching b/c the former applies to tilemap tiles and the latter to the "ground"
         if(!this.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
             this.player.anims.play('jump');
@@ -676,14 +682,15 @@ class Platformer extends Phaser.Scene {
                 this.dialogueBox.setVisible(true);
                 this.dialogueText.setVisible(true);
                 this.IN_DIALOGUE = true;
-                this.typeText(npc.dialogue[0]);
+                this.playerFrozen = true;
+                this.typeText(npc.dialogue[0], npc);
                 //this.dialogueText.setText(npc.dialogue[0]);
             }
 
             else if (this.DIALOGUE_INDEX < npc.dialogue.length - 1) {
                 this.IN_DIALOGUE = true;
                 this.DIALOGUE_INDEX++;
-                this.typeText(npc.dialogue[this.DIALOGUE_INDEX]);
+                this.typeText(npc.dialogue[this.DIALOGUE_INDEX], npc);
                 //this.dialogueText.setText(npc.dialogue[this.DIALOGUE_INDEX]);
             }
 
@@ -693,10 +700,11 @@ class Platformer extends Phaser.Scene {
                 this.dialogueBox.setVisible(false);
                 this.dialogueText.setVisible(false);
                 npc.blowUpSprite.setVisible(false);
+                this.playerFrozen = false;
             }
         }
     }
-    typeText(text) {
+    typeText(text, npc) {
         this.dialogueText.setText("");
 
         let i = 0;
@@ -706,6 +714,12 @@ class Platformer extends Phaser.Scene {
             repeat: text.length - 1,
             callback: () => {
                 this.dialogueText.text += text[i];
+                if (text[i] !== " " && "aeiou".includes(text[i].toLowerCase())) {
+                    this.talkingSound.play({
+                        //detune: Phaser.Math.Between(-100, 100),
+                        rate: npc.talkRate
+                    })
+                }
                 i++;
             }
         });

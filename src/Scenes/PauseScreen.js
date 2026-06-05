@@ -34,6 +34,7 @@ class PauseScreen extends Phaser.Scene {
     update(time, delta) {
         if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
             this.scene.stop();
+            this.sound.setVolume(1);
             this.scene.resume("platformerScene");
         }
     }
