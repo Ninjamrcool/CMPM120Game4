@@ -44,6 +44,9 @@ class Load extends Phaser.Scene {
         this.load.image("green_pixel_particle", "sprites/particles/green_pixel.png");
         this.load.image("white_star_particle", "sprites/particles/white_star.png");
 
+        //controls ui
+        this.load.image("controls_ui", "PhaserControls.png");
+
         // Load font
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
 

@@ -109,7 +109,7 @@ class Platformer extends Phaser.Scene {
         //Must be after setupSounds() so that NPCs can use the sounds when talking
         this.setupNPCS();
 
-        this.background = this.add.tileSprite(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y, "background").setOrigin(0, 0).setScrollFactor(0.5).depth = -2;
+        this.background = this.add.tileSprite(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y, "background").setOrigin(0, 0).setTint(0xaaaaaa).setScrollFactor(0.5).depth = -2;
 
         this.spawnAcidLights();
 
@@ -158,6 +158,7 @@ class Platformer extends Phaser.Scene {
         for (let collectible of this.collectibles) {
             collectible.y += 576;
             collectible.setPipeline('Light2D');
+            collectible.light = this.lights.addLight(collectible.x, collectible.y, 100, 0x5050aa, 0.5);
         }
 
         this.crates = this.map.createFromObjects("Crates", {
@@ -369,6 +370,7 @@ class Platformer extends Phaser.Scene {
             this.collectiblesVFX.explode();
             this.collectSound.play();
             obj2.destroy(); // remove collectible on overlap
+            this.lights.removeLight(obj2.light);
         });
     }
 
@@ -399,6 +401,9 @@ class Platformer extends Phaser.Scene {
             this.physics.world.debugGraphic.clear()
         }, this);
         this.physics.world.drawDebug = false;
+
+        //add ui for controls
+        this.add.image(298, 565, "controls_ui").setScale(0.1).setAlpha(1);
     }
 
     setupCamera() {
