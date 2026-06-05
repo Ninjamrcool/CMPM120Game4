@@ -158,7 +158,7 @@ class Platformer extends Phaser.Scene {
         for (let collectible of this.collectibles) {
             collectible.y += 576;
             collectible.setPipeline('Light2D');
-            collectible.light = this.lights.addLight(collectible.x, collectible.y, 100, 0x5050aa, 0.5);
+            collectible.light = this.lights.addLight(collectible.x, collectible.y, 100, 0x7080aa, 0.5);
         }
 
         this.crates = this.map.createFromObjects("Crates", {
@@ -222,8 +222,10 @@ class Platformer extends Phaser.Scene {
                 sprite: this.add.sprite(300, 510, "platformer_characters", "tile_0017.png").setPipeline('Light2D').anims.play('npc1', true),
                 // setImmovable: true,
                 dialogue: [
-                    "Hello there!",
-                    "Nice weather!"
+                    "AAAAAAAAAH!!!!!",
+                    "Something's gone wrong with the factory!!!",
+                    "I knew my workspace was messy but not THIS MESSY! ",
+                    "We gotta get out of here!",
                 ],
                 light: this.lights.addLight(300, 500, 100, 0x303050, 1),
                 blowUpSprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png")
@@ -235,7 +237,7 @@ class Platformer extends Phaser.Scene {
             },
             {
                 name: "npc2",
-                sprite: this.add.sprite(600, 450, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc2', true),
+                sprite: this.add.sprite(580, 450, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc2', true),
                 dialogue: [
                     "What's up?",
                     "How's it going?"
@@ -759,6 +761,7 @@ class Platformer extends Phaser.Scene {
         if (this.hasWon){
             if (!this.scene.isActive("winScreenScene")){
                 this.stopFootstepSounds();
+                this.factoryMusic.stop();
                 this.scene.restart();
             }
             return;
