@@ -31,6 +31,11 @@ class Platformer extends Phaser.Scene {
         this.CAMERA_LERP_SPEED = 0.06;
         this.CAMERA_BOUND_X = 1700;
         this.CAMERA_BOUND_Y = 650;
+
+        // NPCs ---------------------
+        this.NPC_RADIUS = 35;
+        this.IN_DIALOGUE = false;
+        this.DIALOGUE_INDEX = 0;
     
         //Misc. ---------------------
         this.PARTICLE_VELOCITY = 30;
@@ -42,6 +47,32 @@ class Platformer extends Phaser.Scene {
         this.playerFrozen = false;
         this.lastBlockedTime = 0;
         this.hasWon = false;
+
+        //Dialogue Box
+        this.dialogueBox = this.add.rectangle(
+            400,
+            550,
+            500,
+            100,
+            0x000000,
+            0.8
+        )
+        .setDepth(1);
+
+        this.dialogueText = this.add.text(
+            100,
+            520,
+            "",
+            {
+                fontSize: "14px",
+                wordWrap: { width: 450 },
+                align: "center"
+            },
+        )
+        .setDepth(2);
+
+        this.dialogueBox.setVisible(false);
+        this.dialogueText.setVisible(false);
     }
 
     // Create --------------------------------------------------------
@@ -56,6 +87,8 @@ class Platformer extends Phaser.Scene {
 
         this.setupPlayer();
 
+        this.setupNPCS();
+
         this.createVFX();
 
         this.setupHardCollisions();
@@ -64,6 +97,8 @@ class Platformer extends Phaser.Scene {
 
         // Must be after createVFX()
         this.setupCollectiblesCollisions();
+
+        this.setupNPCSCollisions();
 
         this.setupInput();
 
@@ -166,7 +201,7 @@ class Platformer extends Phaser.Scene {
 
     setupPlayer() {
         // set up player avatar
-        this.player = this.physics.add.sprite(this.SPAWN_X, this.SPAWN_Y, "platformer_characters", "tile_0000.png");
+        this.player = this.physics.add.sprite(this.SPAWN_X, this.SPAWN_Y, "platformer_characters", "tile_0019.png");
         this.player.setCollideWorldBounds(false);
         this.player.scale = this.PLAYER_SCALE;
         this.player.body.setSize(15, 13, true); 
@@ -175,6 +210,30 @@ class Platformer extends Phaser.Scene {
         this.player.setPipeline('Light2D');
 
         this.playerLight = this.lights.addLight(200, 300, 100, 0x303050, 1);
+    }
+
+    setupNPCS() {
+        this.npcs = [
+            {
+                name: "npc1",
+                sprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png").setPipeline('Light2D'),
+                // setImmovable: true,
+                dialogue: [
+                    "Hello there!",
+                    "Nice weather!"
+                ],
+                light: this.lights.addLight(300, 500, 100, 0x308030, 1)
+            },
+            {
+                name: "npc2",
+                sprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png").setPipeline('Light2D'),
+                dialogue: [
+                    "What's up?",
+                    "How's it going?"
+                ],
+                light: this.lights.addLight(600, 450, 100, 0x308030, 1)
+            }
+        ];
     }
 
     createVFX() {
@@ -299,6 +358,12 @@ class Platformer extends Phaser.Scene {
         });
     }
 
+    setupNPCSCollisions() {
+        this.physics.add.collider(this.player, this.npc1, () => {
+            console.log("talk to npc");
+        });
+    }
+
     setupInput() {
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
@@ -418,6 +483,8 @@ class Platformer extends Phaser.Scene {
 
         this.handleButtons(delta)
 
+        this.handleNPCInteraction(delta);
+
         this.playerLight.x = this.player.x;
         this.playerLight.y = this.player.y;
 
@@ -436,6 +503,9 @@ class Platformer extends Phaser.Scene {
     }
 
     handlePlayerInput() {
+        if (this.IN_DIALOGUE) {
+            return;
+        }
         let inputDirection = 0;
         if (!this.playerFrozen){
             if(cursors.left.isDown || this.aKey.isDown) {
@@ -479,6 +549,9 @@ class Platformer extends Phaser.Scene {
     }
 
     checkFootstepSounds(inputDirection, delta) {
+        if (this.IN_DIALOGUE) {
+            return;
+        }
         if ((inputDirection !== 0 || Math.abs(this.player.body.velocity.x) > 30) && this.player.body.blocked.down) {
             if (!this.footstep1Sound.isPlaying) {
                 this.startFootstepSounds();
@@ -515,6 +588,9 @@ class Platformer extends Phaser.Scene {
     }
 
     handlePlayerJump(time) {
+        if (this.IN_DIALOGUE) {
+            return;
+        }
         // note that we need body.blocked rather than body.touching b/c the former applies to tilemap tiles and the latter to the "ground"
         if(!this.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
             this.player.anims.play('jump');
@@ -575,6 +651,44 @@ class Platformer extends Phaser.Scene {
             }
         }
     }
+    
+    handleNPCInteraction(delta) {
+        for (let npc of this.npcs) {
+            if (!(Math.sqrt((npc.sprite.x - this.player.x) ** 2 + (npc.sprite.y - this.player.y) ** 2) < this.NPC_RADIUS)) {
+                continue;
+            }
+            if (!Phaser.Input.Keyboard.JustDown(this.eKey)) {
+                continue;
+            }
+
+            if (this.IN_DIALOGUE == false) {
+                this.dialogueBox.x = this.cameras.main.midPoint.x;
+                this.dialogueBox.y = this.cameras.main.midPoint.y + 50;
+                this.dialogueText.x = this.cameras.main.midPoint.x;
+                this.dialogueText.y = this.cameras.main.midPoint.y + 50;
+                this.dialogueBox.setOrigin(0.5);
+                this.dialogueText.setOrigin(0.5);
+                this.dialogueBox.setVisible(true);
+                this.dialogueText.setVisible(true);
+                this.IN_DIALOGUE = true;
+                this.dialogueText.setText(npc.dialogue[0]);
+            }
+
+            else if (this.DIALOGUE_INDEX < npc.dialogue.length - 1) {
+                this.IN_DIALOGUE = true;
+                this.DIALOGUE_INDEX++;
+                this.dialogueText.setText(npc.dialogue[this.DIALOGUE_INDEX]);
+            }
+
+            else {
+                this.DIALOGUE_INDEX = 0;
+                this.IN_DIALOGUE = false;
+                this.dialogueBox.setVisible(false);
+                this.dialogueText.setVisible(false);
+            }
+        }
+    }
+
 
     resetCrates(){
         for (let crate of this.crates) {
