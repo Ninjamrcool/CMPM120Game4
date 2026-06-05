@@ -40,7 +40,7 @@ class Platformer extends Phaser.Scene {
         //Misc. ---------------------
         this.PARTICLE_VELOCITY = 30;
         this.PARTICLE_FREQUENCY = 0.1;
-        this.AMBIENT_COLOR = 0x505050;
+        this.AMBIENT_COLOR = 0x303030;
         this.MUSIC_PLAYING = false;
 
         //Runtime
@@ -218,25 +218,33 @@ class Platformer extends Phaser.Scene {
         this.npcs = [
             {
                 name: "npc1",
-                sprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png").setPipeline('Light2D'),
+                sprite: this.add.sprite(300, 510, "platformer_characters", "tile_0017.png").setPipeline('Light2D').anims.play('npc1', true),
                 // setImmovable: true,
                 dialogue: [
                     "Hello there!",
                     "Nice weather!"
                 ],
-                light: this.lights.addLight(300, 500, 100, 0x308030, 1),
-                blowUpSprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png").setScale(3).setVisible(false).setDepth(4),
+                light: this.lights.addLight(300, 500, 100, 0x303050, 1),
+                blowUpSprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png")
+                .setScale(3)
+                .setVisible(false)
+                .setDepth(4)
+                .anims.play('npc1', true),
                 talkRate: 1,
             },
             {
                 name: "npc2",
-                sprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png").setPipeline('Light2D'),
+                sprite: this.add.sprite(600, 450, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc2', true),
                 dialogue: [
                     "What's up?",
                     "How's it going?"
                 ],
-                light: this.lights.addLight(600, 450, 100, 0x308030, 1),
-                blowUpSprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png").setScale(3).setVisible(false).setDepth(4),
+                light: this.lights.addLight(600, 450, 100, 0x303050, 1),
+                blowUpSprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png")
+                .setScale(3)
+                .setVisible(false)
+                .setDepth(4)
+                .anims.play('npc2', true),
                 talkRate: 0.5,
             }
         ];
