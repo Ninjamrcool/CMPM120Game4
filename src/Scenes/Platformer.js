@@ -24,7 +24,7 @@ class Platformer extends Phaser.Scene {
         this.CRATE_DRAG = 1200;
         this.CRATE_MASS = 0.4;
         this.BUTTON_RADIUS = 35;
-        this.BUTTON_PRESS_SECONDS = 1.0;
+        this.BUTTON_PRESS_SECONDS = 0.3;
 
         // Camera ---------------------
         this.CAMERA_SCALE = 2.5;
@@ -41,13 +41,13 @@ class Platformer extends Phaser.Scene {
         this.PARTICLE_VELOCITY = 30;
         this.PARTICLE_FREQUENCY = 0.1;
         this.AMBIENT_COLOR = 0x303030;
-        this.MUSIC_PLAYING = false;
 
         //Runtime
         this.coyoteTimer = 0;
         this.playerFrozen = false;
         this.lastBlockedTime = 0;
         this.hasWon = false;
+        this.musicPlaying = false;
 
         //Dialogue Box
         this.dialogueBox = this.add.rectangle(
@@ -454,6 +454,10 @@ class Platformer extends Phaser.Scene {
             volume: 0.25
         });
 
+        this.buttonPressSound = this.sound.add("button_press", {
+            volume: 0.25
+        });
+
         //create bg music
         this.factoryMusic = this.sound.add("factory_music", {
             volume: 0.2,
@@ -536,17 +540,17 @@ class Platformer extends Phaser.Scene {
         let inputDirection = 0;
         if (!this.playerFrozen){
             if (cursors.left.isDown || this.aKey.isDown) {
-                if (!this.MUSIC_PLAYING){
+                if (!this.musicPlaying){
                     this.factoryMusic.play();
-                    this.MUSIC_PLAYING = true;
+                    this.musicPlaying = true;
                 }
                 inputDirection = -1;
                 this.player.resetFlip();
             }
             else if (cursors.right.isDown || this.dKey.isDown) {
-                if (!this.MUSIC_PLAYING){
+                if (!this.musicPlaying){
                     this.factoryMusic.play();
-                    this.MUSIC_PLAYING = true;
+                    this.musicPlaying = true;
                 }
                 inputDirection = 1;
                 this.player.setFlip(true, false);
@@ -642,7 +646,7 @@ class Platformer extends Phaser.Scene {
             this.footstep2Sound.stop();
             this.footstep3Sound.stop();
             this.factoryMusic.stop();
-            this.MUSIC_PLAYING = false;
+            this.musicPlaying = false;
             this.scene.restart();
         }
     }
@@ -668,6 +672,8 @@ class Platformer extends Phaser.Scene {
                     button.setTexture("button_pressed");
                     button.pressedTimer = this.BUTTON_PRESS_SECONDS
                     this.resetCrates();
+                    
+                    this.buttonPressSound.play();
 
                     this.buttonVFX.x = button.x;
                     this.buttonVFX.y = button.y + button.displayHeight/2;

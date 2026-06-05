@@ -34,7 +34,14 @@ class PauseScreen extends Phaser.Scene {
         this.mainMenuButton.setScale(2.5);
         this.mainMenuButton.setInteractive();
 
+        this.hoverSound = this.sound.add("ui_button_hover", {
+            volume: 0.25
+        });
+
         this.mainMenuButton.on("pointerdown", (pointer) => {
+            this.hoverSound.detune = 600;
+            this.hoverSound.play();
+
             this.scene.stop();
             this.sound.setVolume(1);
             this.scene.resume("platformerScene");
@@ -43,10 +50,14 @@ class PauseScreen extends Phaser.Scene {
 
         this.mainMenuButton.on('pointerover', () => {
             this.mainMenuButton.setTint(0xbbbbbb);
+            this.hoverSound.detune = 0;
+            this.hoverSound.play();
         });
 
         this.mainMenuButton.on('pointerout', () => {
             this.mainMenuButton.setTint(0xffffff);
+            this.hoverSound.detune = -300;
+            this.hoverSound.play();
         });
 
         this.escKey = this.input.keyboard.addKey('ESC');

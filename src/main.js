@@ -19,6 +19,8 @@
 // https://pixabay.com/sound-effects/film-special-effects-jumplanding-398256/
 // https://pixabay.com/sound-effects/technology-correct-answer-toy-bi-bling-476370/
 // https://pixabay.com/music/beats-electronic-chill-deep-ambient-downtempo-mix-music-dejcoart-433279/
+// https://pixabay.com/sound-effects/film-special-effects-button-press-382713/
+// https://pixabay.com/sound-effects/film-special-effects-minimalist-button-hover-sound-effect-399749/
 
 // debug with extreme prejudice
 "use strict"

@@ -39,17 +39,27 @@ class MainMenuScreen extends Phaser.Scene {
         this.npcDecor.setScale(25);
         this.npcDecor.angle = -10;
 
+        this.hoverSound = this.sound.add("ui_button_hover", {
+            volume: 0.25
+        });
+
         this.playButton.on("pointerdown", (pointer) => {
+            this.hoverSound.detune = 600;
+            this.hoverSound.play();
             this.mainMenuMusic.stop();
             this.scene.start("platformerScene");
         });
 
         this.playButton.on('pointerover', () => {
             this.playButton.setTint(0xbbbbbb);
+            this.hoverSound.detune = 0;
+            this.hoverSound.play();
         });
 
         this.playButton.on('pointerout', () => {
             this.playButton.setTint(0xffffff);
+            this.hoverSound.detune = -300;
+            this.hoverSound.play();
         });
 
         this.mainMenuMusic = this.sound.add("main_menu_music", {

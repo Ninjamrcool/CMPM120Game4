@@ -63,7 +63,9 @@ class Load extends Phaser.Scene {
         this.load.audio("collect", "collect.mp3");
         this.load.audio("jump", "jump.mp3");
         this.load.audio("win", "win.mp3");
-
+        this.load.audio("button_press", "button_press.mp3");
+        this.load.audio("ui_button_hover", "ui_button_hover.mp3");
+    
         // Load NPCS Speak
         this.load.audio("talking1", "talking1.wav");
         this.load.audio("talking2", "talking2.wav");
