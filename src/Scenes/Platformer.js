@@ -41,6 +41,7 @@ class Platformer extends Phaser.Scene {
         this.PARTICLE_VELOCITY = 30;
         this.PARTICLE_FREQUENCY = 0.1;
         this.AMBIENT_COLOR = 0x505050;
+        this.MUSIC_PLAYING = false;
 
         //Runtime
         this.coyoteTimer = 0;
@@ -382,7 +383,6 @@ class Platformer extends Phaser.Scene {
         this.dKey = this.input.keyboard.addKey('D');
 
         this.escKey = this.input.keyboard.addKey('ESC');
-        this.spaceBar = this.input.keyboard.addKey('SPACE');
 
 
         // debug key listener (assigned to D key)
@@ -441,7 +441,7 @@ class Platformer extends Phaser.Scene {
 
         //create bg music
         this.factoryMusic = this.sound.add("factory_music", {
-            volume: 0.1,
+            volume: 0.2,
             loop: true
         });
     }
@@ -508,11 +508,6 @@ class Platformer extends Phaser.Scene {
 
         this.coyoteTimer += delta / 1000;
 
-        //console.log(this.player.x);
-        //console.log(this.player.y);
-        if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-            this.factoryMusic.play();
-        }
 
         if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
             this.stopFootstepSounds();
@@ -526,10 +521,18 @@ class Platformer extends Phaser.Scene {
         let inputDirection = 0;
         if (!this.playerFrozen){
             if(cursors.left.isDown || this.aKey.isDown) {
+                if(!this.MUSIC_PLAYING){
+                    this.factoryMusic.play();
+                    this.MUSIC_PLAYING = true;
+                }
                 inputDirection = -1;
                 this.player.resetFlip();
             }
             else if(cursors.right.isDown || this.dKey.isDown) {
+                if(!this.MUSIC_PLAYING){
+                    this.factoryMusic.play();
+                    this.MUSIC_PLAYING = true;
+                }
                 inputDirection = 1;
                 this.player.setFlip(true, false);
             }
@@ -623,6 +626,8 @@ class Platformer extends Phaser.Scene {
             this.footstep1Sound.stop();
             this.footstep2Sound.stop();
             this.footstep3Sound.stop();
+            this.factoryMusic.stop();
+            this.MUSIC_PLAYING = false;
             this.scene.restart();
         }
     }
