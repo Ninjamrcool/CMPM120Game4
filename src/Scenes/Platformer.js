@@ -52,7 +52,7 @@ class Platformer extends Phaser.Scene {
         this.dialogueBox = this.add.rectangle(
             400,
             550,
-            500,
+            400,
             100,
             0x000000,
             0.8
@@ -65,7 +65,7 @@ class Platformer extends Phaser.Scene {
             "",
             {
                 fontSize: "14px",
-                wordWrap: { width: 450 },
+                wordWrap: { width: 300 },
                 align: "center"
             },
         )
@@ -222,7 +222,8 @@ class Platformer extends Phaser.Scene {
                     "Hello there!",
                     "Nice weather!"
                 ],
-                light: this.lights.addLight(300, 500, 100, 0x308030, 1)
+                light: this.lights.addLight(300, 500, 100, 0x308030, 1),
+                blowUpSprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png").setScale(3).setVisible(false).setDepth(4),
             },
             {
                 name: "npc2",
@@ -231,7 +232,8 @@ class Platformer extends Phaser.Scene {
                     "What's up?",
                     "How's it going?"
                 ],
-                light: this.lights.addLight(600, 450, 100, 0x308030, 1)
+                light: this.lights.addLight(600, 450, 100, 0x308030, 1),
+                blowUpSprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png").setScale(3).setVisible(false).setDepth(4),
             }
         ];
     }
@@ -664,20 +666,25 @@ class Platformer extends Phaser.Scene {
             if (this.IN_DIALOGUE == false) {
                 this.dialogueBox.x = this.cameras.main.midPoint.x;
                 this.dialogueBox.y = this.cameras.main.midPoint.y + 50;
-                this.dialogueText.x = this.cameras.main.midPoint.x;
+                this.dialogueText.x = this.cameras.main.midPoint.x - 45;
                 this.dialogueText.y = this.cameras.main.midPoint.y + 50;
+                npc.blowUpSprite.x = this.dialogueBox.x + 150;
+                npc.blowUpSprite.y = this.dialogueBox.y;
+                npc.blowUpSprite.setVisible(true);
                 this.dialogueBox.setOrigin(0.5);
                 this.dialogueText.setOrigin(0.5);
                 this.dialogueBox.setVisible(true);
                 this.dialogueText.setVisible(true);
                 this.IN_DIALOGUE = true;
-                this.dialogueText.setText(npc.dialogue[0]);
+                this.typeText(npc.dialogue[0]);
+                //this.dialogueText.setText(npc.dialogue[0]);
             }
 
             else if (this.DIALOGUE_INDEX < npc.dialogue.length - 1) {
                 this.IN_DIALOGUE = true;
                 this.DIALOGUE_INDEX++;
-                this.dialogueText.setText(npc.dialogue[this.DIALOGUE_INDEX]);
+                this.typeText(npc.dialogue[this.DIALOGUE_INDEX]);
+                //this.dialogueText.setText(npc.dialogue[this.DIALOGUE_INDEX]);
             }
 
             else {
@@ -685,8 +692,23 @@ class Platformer extends Phaser.Scene {
                 this.IN_DIALOGUE = false;
                 this.dialogueBox.setVisible(false);
                 this.dialogueText.setVisible(false);
+                npc.blowUpSprite.setVisible(false);
             }
         }
+    }
+    typeText(text) {
+        this.dialogueText.setText("");
+
+        let i = 0;
+
+        this.time.addEvent({
+            delay: 30, // milliseconds between letters
+            repeat: text.length - 1,
+            callback: () => {
+                this.dialogueText.text += text[i];
+                i++;
+            }
+        });
     }
 
 
