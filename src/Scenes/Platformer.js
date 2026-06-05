@@ -504,7 +504,7 @@ class Platformer extends Phaser.Scene {
 
     handlePlayerInput() {
         if (this.IN_DIALOGUE) {
-            return;
+            return 0;
         }
         let inputDirection = 0;
         if (!this.playerFrozen){
