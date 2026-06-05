@@ -463,7 +463,7 @@ class Platformer extends Phaser.Scene {
 
     spawnAcidLights() {
         this.killLayer.forEachTile(tile => {
-            if(tile && tile.index > 0){
+            if (tile && tile.index > 0){
                 if ((tile.x + tile.y) % 6 === 1){
                     this.lights.addLight(tile.pixelX, tile.pixelY, 100, 0x308030, 1);
                 }
@@ -471,7 +471,7 @@ class Platformer extends Phaser.Scene {
         });
 
         this.decorLayer.forEachTile(tile => {
-            if(tile && tile.index === 31){ //acid waterfall center tile
+            if (tile && tile.index === 31){ //acid waterfall center tile
                 if ((tile.x + tile.y) % 4 === 1){
                     this.lights.addLight(tile.pixelX, tile.pixelY, 100, 0x308030, 1);
                 }
@@ -484,7 +484,7 @@ class Platformer extends Phaser.Scene {
         this.map.layers.forEach(layerData => {
             layerData.data.forEach(row => {
                 row.forEach((tile, i) => {
-                    if(tile === null){
+                    if (tile === null){
                         row[i] = new Phaser.Tilemaps.Tile(layerData, 1, 0, 0, this.map.tileWidth, this.map.tileHeight, this.map.tileWidth, this.map.tileHeight);
                     }
                 });
@@ -535,16 +535,16 @@ class Platformer extends Phaser.Scene {
     handlePlayerInput() {
         let inputDirection = 0;
         if (!this.playerFrozen){
-            if(cursors.left.isDown || this.aKey.isDown) {
-                if(!this.MUSIC_PLAYING){
+            if (cursors.left.isDown || this.aKey.isDown) {
+                if (!this.MUSIC_PLAYING){
                     this.factoryMusic.play();
                     this.MUSIC_PLAYING = true;
                 }
                 inputDirection = -1;
                 this.player.resetFlip();
             }
-            else if(cursors.right.isDown || this.dKey.isDown) {
-                if(!this.MUSIC_PLAYING){
+            else if (cursors.right.isDown || this.dKey.isDown) {
+                if (!this.MUSIC_PLAYING){
                     this.factoryMusic.play();
                     this.MUSIC_PLAYING = true;
                 }
@@ -618,10 +618,10 @@ class Platformer extends Phaser.Scene {
 
     handlePlayerJump(time) {
         // note that we need body.blocked rather than body.touching b/c the former applies to tilemap tiles and the latter to the "ground"
-        if(!this.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
+        if (!this.player.body.blocked.down && time - this.lastBlockedTime > 100 && !this.playerFrozen) {
             this.player.anims.play('jump');
         }
-        if(!this.playerFrozen && (this.player.body.blocked.down || this.coyoteTimer < this.COYOTE_TIME) && (Phaser.Input.Keyboard.JustDown(cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey))) {
+        if (!this.playerFrozen && (this.player.body.blocked.down || this.coyoteTimer < this.COYOTE_TIME) && (Phaser.Input.Keyboard.JustDown(cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey))) {
             this.player.body.setVelocityY(this.JUMP_VELOCITY);
 
             this.jumpSound.play();
@@ -637,7 +637,7 @@ class Platformer extends Phaser.Scene {
     }
 
     handleRestartInput() {
-        if(Phaser.Input.Keyboard.JustDown(this.rKey)) {
+        if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.footstep1Sound.stop();
             this.footstep2Sound.stop();
             this.footstep3Sound.stop();
@@ -775,5 +775,12 @@ class Platformer extends Phaser.Scene {
         this.scene.pause();
 
         return;
+    }
+
+    // Called from pause screen
+    returnToMainMenu() {
+        this.stopFootstepSounds();
+        this.factoryMusic.stop();
+        this.scene.start("mainMenuScene");
     }
 }

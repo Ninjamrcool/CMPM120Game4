@@ -18,6 +18,7 @@
 // https://pixabay.com/sound-effects/film-special-effects-metal-clink-415813/
 // https://pixabay.com/sound-effects/film-special-effects-jumplanding-398256/
 // https://pixabay.com/sound-effects/technology-correct-answer-toy-bi-bling-476370/
+// https://pixabay.com/music/beats-electronic-chill-deep-ambient-downtempo-mix-music-dejcoart-433279/
 
 // debug with extreme prejudice
 "use strict"
@@ -43,7 +44,7 @@ let config = {
     },
     width: 1440,
     height: 900,
-    scene: [Load, Platformer, PauseScreen, WinScreen]
+    scene: [Load, MainMenuScreen, Platformer, PauseScreen, WinScreen]
 }
 
 var cursors;

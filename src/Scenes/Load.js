@@ -69,7 +69,8 @@ class Load extends Phaser.Scene {
         this.load.audio("talking2", "talking2.wav");
 
         // Load Music
-        this.load.audio("factory_music", "bgAudio.mp3");
+        this.load.audio("factory_music", "factory_music.mp3");
+        this.load.audio("main_menu_music", "main_menu_music.mp3");
     }
 
     create() {
@@ -143,7 +144,7 @@ class Load extends Phaser.Scene {
 
 
          // ...and pass to the next Scene
-         this.scene.start("platformerScene");
+         this.scene.start("mainMenuScene");
     }
 
     // Never get here since a new scene is started in create()
