@@ -544,15 +544,15 @@ class Platformer extends Phaser.Scene {
                     this.factoryMusic.play();
                     this.musicPlaying = true;
                 }
-                inputDirection = -1;
+                inputDirection -= 1;
                 this.player.resetFlip();
             }
-            else if (cursors.right.isDown || this.dKey.isDown) {
+            if (cursors.right.isDown || this.dKey.isDown) {
                 if (!this.musicPlaying){
                     this.factoryMusic.play();
                     this.musicPlaying = true;
                 }
-                inputDirection = 1;
+                inputDirection += 1;
                 this.player.setFlip(true, false);
             }
         }
