@@ -25,6 +25,26 @@ class MainMenuScreen extends Phaser.Scene {
         this.playButton.setScale(3.0);
         this.playButton.setInteractive();
 
+        this.creditsButton = this.add.bitmapText(x + 450, y - 400, "rocketSquare", "- Credits -");
+        this.creditsButton.setDepth(4);
+        this.creditsButton.setOrigin(0.5);
+        this.creditsButton.setScale(2.0);
+        this.creditsButton.setInteractive();
+
+        this.creditsText = this.add.bitmapText(x, y/2 + 20, "rocketSquare", "Credits:\n \nTyler Roth\nJack Seales\n \nMusic and sounds from Pixabay\nArt from Kenny Assets");
+        this.creditsText.setDepth(4);
+        this.creditsText.setOrigin(0.5);
+        this.creditsText.setScale(2.0);
+        this.creditsText.setInteractive();
+        this.creditsText.setVisible(false);
+
+        this.creditsBackButton = this.add.bitmapText(x + 450, y - 400, "rocketSquare", "-  Back  -");
+        this.creditsBackButton.setDepth(4);
+        this.creditsBackButton.setOrigin(0.5);
+        this.creditsBackButton.setScale(2.0);
+        this.creditsBackButton.setInteractive();
+        this.creditsBackButton.setVisible(false);
+
         this.background = this.add.tileSprite(0, 0, 400, 400, "background").setOrigin(0, 0).setTint(0x999999)
         this.background.setScale(5);
 
@@ -58,6 +78,50 @@ class MainMenuScreen extends Phaser.Scene {
 
         this.playButton.on('pointerout', () => {
             this.playButton.setTint(0xffffff);
+            this.hoverSound.detune = -300;
+            this.hoverSound.play();
+        });
+
+        this.creditsButton.on("pointerdown", (pointer) => {
+            this.hoverSound.detune = 600;
+            this.hoverSound.play();
+            this.creditsText.setVisible(true);
+            this.creditsBackButton.setVisible(true);
+            this.playButton.setVisible(false);
+            this.titleText.setVisible(false);
+            this.creditsButton.setVisible(false);
+        });
+
+        this.creditsButton.on('pointerover', () => {
+            this.creditsButton.setTint(0xbbbbbb);
+            this.hoverSound.detune = 0;
+            this.hoverSound.play();
+        });
+
+        this.creditsButton.on('pointerout', () => {
+            this.creditsButton.setTint(0xffffff);
+            this.hoverSound.detune = -300;
+            this.hoverSound.play();
+        });
+
+        this.creditsBackButton.on("pointerdown", (pointer) => {
+            this.hoverSound.detune = 600;
+            this.hoverSound.play();
+            this.creditsText.setVisible(false);
+            this.creditsBackButton.setVisible(false);
+            this.creditsButton.setVisible(true);
+            this.playButton.setVisible(true);
+            this.titleText.setVisible(true);
+        });
+
+        this.creditsBackButton.on('pointerover', () => {
+            this.creditsBackButton.setTint(0xbbbbbb);
+            this.hoverSound.detune = 0;
+            this.hoverSound.play();
+        });
+
+        this.creditsBackButton.on('pointerout', () => {
+            this.creditsBackButton.setTint(0xffffff);
             this.hoverSound.detune = -300;
             this.hoverSound.play();
         });
