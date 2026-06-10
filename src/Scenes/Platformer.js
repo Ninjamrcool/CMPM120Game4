@@ -345,16 +345,12 @@ class Platformer extends Phaser.Scene {
         this.physics.add.collider(this.invisibleHitbox, this.groundLayer);
         this.physics.add.collider(this.player, this.endpoint, () => {
             if (this.hasWon) {
-                if (!this.scene.isActive("winScreenScene")) {
-                    this.stopFootstepSounds();
-                    this.factoryMusic.stop();
-                    this.scene.restart();
-                }
                 return;
             }
 
             this.hasWon = true;
             this.winSound.play();
+            this.factoryMusic.stop();
 
             this.stopFootstepSounds();
             this.scene.launch("winScreenScene");

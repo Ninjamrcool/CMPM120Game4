@@ -40,8 +40,9 @@ class WinScreen extends Phaser.Scene {
         this.blackSquare.alpha = 0.5;
 
         this.input.on("pointerdown", (pointer) => {
-            this.scene.resume("platformerScene");
             this.scene.stop();
+            this.scene.stop("platformerScene");
+            this.scene.start("platformerScene");
         });
     }
 
