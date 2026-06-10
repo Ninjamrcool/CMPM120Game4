@@ -10,11 +10,11 @@
             "scaleInEditor": 3
         },
         "factory.tmx": {
-            "scale": 0.75,
+            "scale": 0.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 638.6666666666666,
-                "y": -98.66666666666663
+                "x": 1177,
+                "y": 795
             }
         },
         "factory.tmx#factory_tileset": {
@@ -28,7 +28,7 @@
             "scaleInEditor": 1
         }
     },
-    "last.exportedFilePath": "C:/Users/curtf/OneDrive/Desktop/CMPM120/CMPM120Game3/FactoryFlight/assets",
+    "last.exportedFilePath": "C:/Users/jack/CMPM 120/CMPM120Game4/assets",
     "last.imagePath": "C:/Users/curtf/OneDrive/Desktop/CMPM120/CMPM120Game3/FactoryFlight/assets/sprites/tilemap",
     "map.fixedSize": false,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",

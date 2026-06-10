@@ -29,7 +29,7 @@ class Platformer extends Phaser.Scene {
         // Camera ---------------------
         this.CAMERA_SCALE = 2.5;
         this.CAMERA_LERP_SPEED = 0.06;
-        this.CAMERA_BOUND_X = 1700;
+        this.CAMERA_BOUND_X = 2300;
         this.CAMERA_BOUND_Y = 650;
 
         // NPCs ---------------------
@@ -84,6 +84,10 @@ class Platformer extends Phaser.Scene {
 
         this.setupTilemap();
 
+        // set camera bounds from the tilemap dimensions
+        this.CAMERA_BOUND_X = this.map.widthInPixels;
+        this.CAMERA_BOUND_Y = this.map.heightInPixels;
+
         this.spawnObjects();
 
         this.setupPlayer();
@@ -109,7 +113,7 @@ class Platformer extends Phaser.Scene {
         //Must be after setupSounds() so that NPCs can use the sounds when talking
         this.setupNPCS();
 
-        this.background = this.add.tileSprite(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y, "background").setOrigin(0, 0).setTint(0xaaaaaa).setScrollFactor(0.5).depth = -2;
+        this.background = this.add.tileSprite(0, 0, this.map.widthInPixels, this.map.heightInPixels, "background").setOrigin(0, 0).setTint(0xaaaaaa).setScrollFactor(0.5).depth = -2;
 
         this.spawnAcidLights();
 
@@ -120,7 +124,7 @@ class Platformer extends Phaser.Scene {
     setupTilemap() {
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
         // 999 tiles wide and 999 tiles tall.
-        this.map = this.add.tilemap("factory", 18, 18, 999, 999);
+        this.map = this.add.tilemap("factory", 18, 18, 144, 64);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -129,9 +133,9 @@ class Platformer extends Phaser.Scene {
         this.rockTileset = this.map.addTilesetImage("rock_tileset", "rock_tiles_packed");
 
         // Create layers
-        this.killLayer = this.map.createLayer("Kill", [this.factoryTileset, this.rockTileset], 0, 0);
-        this.groundLayer = this.map.createLayer("Ground", [this.factoryTileset, this.rockTileset], 0, 0);
-        this.decorLayer = this.map.createLayer("Decor", [this.factoryTileset, this.rockTileset], 0, 0);
+        this.killLayer = this.map.createLayer("Kill", [this.factoryTileset, this.rockTileset]);
+        this.groundLayer = this.map.createLayer("Ground", [this.factoryTileset, this.rockTileset]);
+        this.decorLayer = this.map.createLayer("Decor", [this.factoryTileset, this.rockTileset]);
 
         this.groundLayer.setPipeline('Light2D');
         this.decorLayer.setPipeline('Light2D');
@@ -156,7 +160,7 @@ class Platformer extends Phaser.Scene {
 
         //this y bug is so dumb
         for (let collectible of this.collectibles) {
-            collectible.y += 576;
+            //collectible.y += 576;
             collectible.setPipeline('Light2D');
             collectible.light = this.lights.addLight(collectible.x, collectible.y, 100, 0x7080aa, 0.5);
         }
@@ -167,7 +171,7 @@ class Platformer extends Phaser.Scene {
         });
 
         for (let crate of this.crates) {
-            crate.y += 576;
+            //crate.y += 576;
             crate.originalX = crate.x;
             crate.originalY = crate.y;
             crate.setPipeline('Light2D');
@@ -179,7 +183,7 @@ class Platformer extends Phaser.Scene {
         });
 
         for (let button of this.buttons) {
-            button.y += 576;
+            //button.y += 576;
             button.pressedTimer = 0.0
             button.setPipeline('Light2D');
             button.light = this.lights.addLight(button.x, button.y, 75, 0x703030, 1);
@@ -200,11 +204,25 @@ class Platformer extends Phaser.Scene {
         // This will be used for collision detection
         this.collectibleGroup = this.add.group(this.collectibles);
         this.crateGroup = this.add.group(this.crates);
+
+
+        //creating spawn and end points
+        this.spawnpoint = this.map.createFromObjects("Points", {
+            name: "spawn"
+        });
+
+        this.endpoint = this.map.createFromObjects("Points", {
+            name: "end"
+        });
+        this.spawnpoint.forEach(p => p.setVisible(false));
+        this.endpoint.forEach(p => p.setVisible(false));
+        //player has to be able to touch endpoint
+        this.physics.world.enable(this.endpoint, Phaser.Physics.Arcade.STATIC_BODY);
     }
 
     setupPlayer() {
         // set up player avatar
-        this.player = this.physics.add.sprite(this.SPAWN_X, this.SPAWN_Y, "platformer_characters", "tile_0019.png");
+        this.player = this.physics.add.sprite(this.spawnpoint[0].x, this.spawnpoint[0].y, "platformer_characters", "tile_0019.png");
         this.player.setCollideWorldBounds(false);
         this.player.scale = this.PLAYER_SCALE;
         this.player.body.setSize(15, 13, true); 
@@ -331,6 +349,23 @@ class Platformer extends Phaser.Scene {
         this.physics.add.collider(this.crateGroup, this.crateGroup);
         this.physics.add.collider(this.invisibleHitbox, this.crateGroup);
         this.physics.add.collider(this.invisibleHitbox, this.groundLayer);
+        this.physics.add.collider(this.player, this.endpoint, () => {
+            if (this.hasWon) {
+                if (!this.scene.isActive("winScreenScene")) {
+                    this.stopFootstepSounds();
+                    this.factoryMusic.stop();
+                    this.scene.restart();
+                }
+                return;
+            }
+
+            this.hasWon = true;
+            this.winSound.play();
+
+            this.stopFootstepSounds();
+            this.scene.launch("winScreenScene");
+            this.scene.pause();
+        });
     }
 
 
@@ -345,6 +380,7 @@ class Platformer extends Phaser.Scene {
             this.deathVFX.y = this.player.y + this.player.displayHeight;
             this.deathVFX.explode();
 
+            this.player.setVelocity(0, 0);
             this.time.delayedCall(this.RESPAWN_TIME * 1000, () => {this.respawnPlayer();}, [], this);
         });
     }
@@ -361,7 +397,7 @@ class Platformer extends Phaser.Scene {
         }
 
         this.player.x = this.buttons[maxIndex].x;
-        this.player.y = this.buttons[maxIndex].y;
+        this.player.y = this.buttons[maxIndex].y - 10;
     }
 
     setupCollectiblesCollisions() {
@@ -409,7 +445,7 @@ class Platformer extends Phaser.Scene {
     }
 
     setupCamera() {
-        this.cameras.main.setBounds(0, 0, this.CAMERA_BOUND_X, this.CAMERA_BOUND_Y);
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, this.CAMERA_LERP_SPEED, this.CAMERA_LERP_SPEED);
         this.cameras.main.setDeadzone(50, 50);
         this.cameras.main.setZoom(this.CAMERA_SCALE);
@@ -522,8 +558,6 @@ class Platformer extends Phaser.Scene {
 
         this.playerLight.x = this.player.x;
         this.playerLight.y = this.player.y;
-
-        this.checkWinState();
 
         this.coyoteTimer += delta / 1000;
 
@@ -757,28 +791,6 @@ class Platformer extends Phaser.Scene {
             crate.x = crate.originalX;
             crate.y = crate.originalY;
         }
-    }
-
-    checkWinState() {
-        if (this.player.x < this.CAMERA_BOUND_X + 50){
-            return;
-        }
-
-        if (this.hasWon){
-            if (!this.scene.isActive("winScreenScene")){
-                this.stopFootstepSounds();
-                this.factoryMusic.stop();
-                this.scene.restart();
-            }
-            return;
-        }
-
-        this.hasWon = true;
-        this.winSound.play();
-
-        this.stopFootstepSounds();
-        this.scene.launch("winScreenScene");
-        this.scene.pause();
 
         return;
     }
