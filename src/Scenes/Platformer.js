@@ -29,8 +29,6 @@ class Platformer extends Phaser.Scene {
         // Camera ---------------------
         this.CAMERA_SCALE = 2.5;
         this.CAMERA_LERP_SPEED = 0.06;
-        this.CAMERA_BOUND_X = 2300;
-        this.CAMERA_BOUND_Y = 650;
 
         // NPCs ---------------------
         this.NPC_RADIUS = 35;
@@ -83,10 +81,6 @@ class Platformer extends Phaser.Scene {
         this.lights.setAmbientColor(this.AMBIENT_COLOR);
 
         this.setupTilemap();
-
-        // set camera bounds from the tilemap dimensions
-        this.CAMERA_BOUND_X = this.map.widthInPixels;
-        this.CAMERA_BOUND_Y = this.map.heightInPixels;
 
         this.spawnObjects();
 
