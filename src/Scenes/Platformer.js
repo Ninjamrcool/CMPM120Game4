@@ -183,6 +183,11 @@ class Platformer extends Phaser.Scene {
             button.light = this.lights.addLight(button.x, button.y, 75, 0x703030, 1);
         }
 
+        this.npcSpawns = this.map.createFromObjects("NPCS", {
+            name: "position",
+        });
+        this.npcSpawns.forEach(p => p.setVisible(false));
+
         // Since createFromObjects returns an array of regular Sprites, we need to convert 
         // them into Arcade Physics sprites (STATIC_BODY, so they don't move) 
         this.physics.world.enable(this.collectibles, Phaser.Physics.Arcade.STATIC_BODY);
@@ -228,10 +233,12 @@ class Platformer extends Phaser.Scene {
     }
 
     setupNPCS() {
+        let npc1 = this.npcSpawns[0];
+        let npc2 = this.npcSpawns[1];
         this.npcs = [
             {
                 name: "npc1",
-                sprite: this.add.sprite(300, 510, "platformer_characters", "tile_0017.png").setPipeline('Light2D').anims.play('npc1', true),
+                sprite: this.add.sprite(npc1.x, npc1.y, "platformer_characters", "tile_0017.png").setPipeline('Light2D').anims.play('npc1', true),
                 // setImmovable: true,
                 dialogue: [
                     "AAAAAAAAAH!!!!!",
@@ -239,8 +246,8 @@ class Platformer extends Phaser.Scene {
                     "I knew my workspace was messy but not THIS MESSY! ",
                     "We gotta get out of here!",
                 ],
-                light: this.lights.addLight(300, 500, 100, 0x303050, 1),
-                blowUpSprite: this.add.sprite(300, 500, "platformer_characters", "tile_0016.png")
+                light: this.lights.addLight(npc1.x, npc1.y, 100, 0x303050, 1),
+                blowUpSprite: this.add.sprite(npc1.x, npc1.y, "platformer_characters", "tile_0016.png")
                 .setScale(3)
                 .setVisible(false)
                 .setDepth(4)
@@ -249,13 +256,13 @@ class Platformer extends Phaser.Scene {
             },
             {
                 name: "npc2",
-                sprite: this.add.sprite(580, 450, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc2', true),
+                sprite: this.add.sprite(npc2.x, npc2.y, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc2', true),
                 dialogue: [
                     "What's up?",
                     "How's it going?"
                 ],
-                light: this.lights.addLight(600, 450, 100, 0x303050, 1),
-                blowUpSprite: this.add.sprite(600, 450, "platformer_characters", "tile_0000.png")
+                light: this.lights.addLight(npc2.x, npc2.y, 100, 0x303050, 1),
+                blowUpSprite: this.add.sprite(npc2.x, npc2.y, "platformer_characters", "tile_0000.png")
                 .setScale(3)
                 .setVisible(false)
                 .setDepth(4)
@@ -755,11 +762,15 @@ class Platformer extends Phaser.Scene {
         }
     }
     typeText(text, npc) {
+        if (this.typingEvent) {
+            this.typingEvent.remove();
+            this.typingEvent = null;
+        }
         this.dialogueText.setText("");
 
         let i = 0;
 
-        this.time.addEvent({
+        this.typingEvent = this.time.addEvent({
             delay: 30, // milliseconds between letters
             repeat: text.length - 1,
             callback: () => {

@@ -292,6 +292,41 @@
         }, 
         {
          "draworder":"topdown",
+         "id":9,
+         "name":"NPCS",
+         "objects":[
+                {
+                 "height":0,
+                 "id":24,
+                 "name":"position",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":243.090909090909,
+                 "y":799.272727272727
+                }, 
+                {
+                 "height":0,
+                 "id":25,
+                 "name":"position",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":656.909090909091,
+                 "y":746.181818181818
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":8,
          "name":"Points",
          "objects":[
@@ -318,8 +353,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":2255.36363636364,
-                 "y":1037.54545454545
+                 "x":294.696969696969,
+                 "y":802.212121212121
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -466,8 +501,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":22,
+ "nextlayerid":10,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
