@@ -477,7 +477,7 @@ class Platformer extends Phaser.Scene {
         this.physics.world.drawDebug = false;
 
         //add ui for controls
-        this.add.image(298, 565, "controls_ui").setScale(0.1).setAlpha(1);
+        this.add.image(298, 865, "controls_ui").setScale(0.1).setAlpha(1);
     }
 
     setupCamera() {
