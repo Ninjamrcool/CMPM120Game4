@@ -10,11 +10,11 @@
             "scaleInEditor": 3
         },
         "factory.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 4,
+            "scale": 0.75,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 1177,
-                "y": 795
+                "x": 2199.333333333333,
+                "y": 1092.6666666666665
             }
         },
         "factory.tmx#factory_tileset": {
