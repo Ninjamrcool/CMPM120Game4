@@ -245,8 +245,9 @@ class Platformer extends Phaser.Scene {
                 dialogue: [
                     "AAAAAAAAAH!!!!!",
                     "Something's gone wrong with the factory!!!",
-                    "I knew my workspace was messy but not THIS MESSY! ",
-                    "We gotta get out of here!",
+                    "I knew my workspace was messy but not THIS MESSY!",
+                    "If I could find my tools in this mess I might be able to fix it but I CAN'T FIND ANYTHING",
+                    "I GOTTA BE LESS MESSY!!!",
                 ],
                 light: this.lights.addLight(npc1.x, npc1.y, 100, 0x303050, 1),
                 blowUpSprite: this.add.sprite(npc1.x, npc1.y, "platformer_characters", "tile_0016.png")
@@ -260,8 +261,11 @@ class Platformer extends Phaser.Scene {
                 name: "npc2",
                 sprite: this.add.sprite(npc2.x, npc2.y, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc2', true),
                 dialogue: [
-                    "What's up?",
-                    "How's it going?"
+                    "Oh uh uh uh uh HI um HI uh IM FREAKING OUTTTT!!",
+                    "I was just working on my project, but I kept leaving everything out instead of putting it away...",
+                    "Next thing I know EVERYTHING STARTED BREAKING!!",
+                    "I TRIED TO FIX IT BUT I THINK I MADE IT WORSE!!",
+                    "HELPPP!!"
                 ],
                 light: this.lights.addLight(npc2.x, npc2.y, 100, 0x303050, 1),
                 blowUpSprite: this.add.sprite(npc2.x, npc2.y, "platformer_characters", "tile_0000.png")
@@ -275,8 +279,9 @@ class Platformer extends Phaser.Scene {
                 name: "npc3",
                 sprite: this.add.sprite(npc3.x, npc3.y, "platformer_characters", "tile_0023.png").setPipeline('Light2D').anims.play('npc3', true),
                 dialogue: [
-                    "What's up?",
-                    "How's it going?"
+                    "Yeah, some disorganized dumbos broke the factory.",
+                    "As you can see, I keep quite the clean workspace, so I'm not too worried about being blamed for it.",
+                    "We really should get out of here though, this place is starting to feel pretty unsafe."
                 ],
                 light: this.lights.addLight(npc3.x, npc3.y, 100, 0x303050, 1),
                 blowUpSprite: this.add.sprite(npc3.x, npc3.y, "platformer_characters", "tile_0000.png")
@@ -290,8 +295,10 @@ class Platformer extends Phaser.Scene {
                 name: "npc4",
                 sprite: this.add.sprite(npc4.x, npc4.y, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc4', true),
                 dialogue: [
-                    "What's up?",
-                    "How's it going?"
+                    "Urghhh I HATE when people don't clean up after themselves!!",
+                    "Now I've gotta go in and fix all the machines and clean up all the messes and it's just UGH!!",
+                    "Anyways, you better get out of here before the whole building collapses.",
+                    "Always better to keep your workspace clean, kid. Trust me on this one."
                 ],
                 light: this.lights.addLight(npc4.x, npc4.y, 100, 0x303050, 1),
                 blowUpSprite: this.add.sprite(npc4.x, npc4.y, "platformer_characters", "tile_0000.png")
