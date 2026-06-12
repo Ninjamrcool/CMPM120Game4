@@ -658,6 +658,10 @@ class Platformer extends Phaser.Scene {
     }
 
     checkFootstepSounds(inputDirection, delta) {
+        if (this.hasWon) {
+            this.stopFootstepSounds();
+            return;
+        }
         if ((inputDirection !== 0 || Math.abs(this.player.body.velocity.x) > 30) && this.player.body.blocked.down) {
             if (!this.footstep1Sound.isPlaying) {
                 this.startFootstepSounds();
