@@ -143,6 +143,32 @@ class Load extends Phaser.Scene {
             repeat: -1
         });
 
+        this.anims.create({
+            key: 'npc3',
+            frames: this.anims.generateFrameNames('platformer_characters', {
+                prefix: "tile_",
+                start: 21,
+                end: 23,
+                suffix: ".png",
+                zeroPad: 4
+            }),
+            frameRate: 4,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'npc4',
+            frames: this.anims.generateFrameNames('platformer_characters', {
+                prefix: "tile_",
+                start: 11,
+                end: 12,
+                suffix: ".png",
+                zeroPad: 4
+            }),
+            frameRate: 2,
+            repeat: -1
+        });
+
 
 
          // ...and pass to the next Scene

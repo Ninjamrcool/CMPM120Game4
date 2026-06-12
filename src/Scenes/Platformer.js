@@ -235,6 +235,8 @@ class Platformer extends Phaser.Scene {
     setupNPCS() {
         let npc1 = this.npcSpawns[0];
         let npc2 = this.npcSpawns[1];
+        let npc3 = this.npcSpawns[2];
+        let npc4 = this.npcSpawns[3];
         this.npcs = [
             {
                 name: "npc1",
@@ -267,6 +269,36 @@ class Platformer extends Phaser.Scene {
                 .setVisible(false)
                 .setDepth(4)
                 .anims.play('npc2', true),
+                talkRate: 1.2,
+            },
+            {
+                name: "npc3",
+                sprite: this.add.sprite(npc3.x, npc3.y, "platformer_characters", "tile_0023.png").setPipeline('Light2D').anims.play('npc3', true),
+                dialogue: [
+                    "What's up?",
+                    "How's it going?"
+                ],
+                light: this.lights.addLight(npc3.x, npc3.y, 100, 0x303050, 1),
+                blowUpSprite: this.add.sprite(npc3.x, npc3.y, "platformer_characters", "tile_0000.png")
+                .setScale(3)
+                .setVisible(false)
+                .setDepth(4)
+                .anims.play('npc3', true),
+                talkRate: 0.3,
+            },
+            {
+                name: "npc4",
+                sprite: this.add.sprite(npc4.x, npc4.y, "platformer_characters", "tile_0024.png").setPipeline('Light2D').anims.play('npc4', true),
+                dialogue: [
+                    "What's up?",
+                    "How's it going?"
+                ],
+                light: this.lights.addLight(npc4.x, npc4.y, 100, 0x303050, 1),
+                blowUpSprite: this.add.sprite(npc4.x, npc4.y, "platformer_characters", "tile_0000.png")
+                .setScale(3)
+                .setVisible(false)
+                .setDepth(4)
+                .anims.play('npc4', true),
                 talkRate: 0.5,
             }
         ];
