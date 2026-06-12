@@ -13,13 +13,13 @@ class WinScreen extends Phaser.Scene {
         let x = this.cameras.main.midPoint.x;
         let y = this.cameras.main.midPoint.y;
         
-        this.youWin = this.add.bitmapText(x, y - 120, "rocketSquare", "You Win!");
+        this.youWin = this.add.bitmapText(x, y - 120, "rocketSquare", "You Escaped!");
         this.youWin.setDepth(4);
         this.youWin.setOrigin(0.5);
         this.youWin.setScale(4.5);
 
         let collectiblesLeft = this.scene.get("platformerScene").collectibleGroup.getChildren().length;
-        this.collectedText = this.add.bitmapText(x, y, "rocketSquare", "Collected " + (3 - collectiblesLeft) + "/3  ");
+        this.collectedText = this.add.bitmapText(x, y, "rocketSquare", "Collected " + (5 - collectiblesLeft) + "/5  ");
         this.collectedText.setDepth(4);
         this.collectedText.setOrigin(0.5);
         this.collectedText.setScale(3.0);
